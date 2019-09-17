@@ -1,0 +1,375 @@
+---
+title: "Analysis of Life Expectancy by County"
+output: html_notebook
+---
+First, the data is read in and extracted into variables.
+```{r}
+#Aim: we wantregressions of mortality rates (y) to smoking prevalence, alcohol prevalence
+#clearing the work space
+rm (list = ls())
+#reading in the data for NON MSAs
+dataNonMSA <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/non MSAs.csv", header=TRUE, sep=",")
+#extracting the data
+#1)smoking
+nonMSAsmokingAny <- dataNonMSA$Smoking.Prevalence.Both.Any..
+smokingDaily <- dataNonMSA$Smoking.Prevalence.Both.Daily..
+nonMSAsmokingMalesAny <-dataNonMSA$Smoking.Prevalence.Males.Any..
+smokingMalesDaily <- dataNonMSA$Smoking.Prevalence.Males.Daily..
+nonMSAsmokingFemalesAny <- dataNonMSA$Smoking.Prevalence.Females.Any..
+smokingFemalesDaily <- dataNonMSA$Smoking.Prevalence.Females.Daily..
+#2)diabetes
+nonMSAdiabetes <- dataNonMSA$Diabetes.PrevalenceTotal.Both.Sex
+nonMSAdiabetesMale <-dataNonMSA$Diabetes.PrevalenceTotal.Males
+nonMSAdiabetesFemale <-dataNonMSA$Diabetes.PrevalenceTotal.Females
+#3)alcohol use
+nonMSAalcoholAny <- dataNonMSA$Alcohol.Use.Any..
+alcoholHeavy <-dataNonMSA$Alcohol.Use.Heavy..
+alcoholBinge <-dataNonMSA$Alcohol.Use.Binge..
+#4) obesity
+nonMSAobesityFemales <-dataNonMSA$Obesity.Prevalence.Females..
+nonMSAobesityMales <-dataNonMSA$Obesity.Prevalence.Males..
+#5) physical activity
+nonMSAactivityAnyFemales <-dataNonMSA$Physical.Activity..Any..Prevalence.Females..
+activitySufficientFemales <- dataNonMSA$Physical.Activity..Sufficient..Prevalence.Females..
+nonMSAactivityAnyMales <- dataNonMSA$Physical.Activity..Any..Prevalence.Males..
+activitySufficientMales <- dataNonMSA$Physical.Activity..Sufficient..Prevalence.Males..
+#6) life expectancy -- have race by male and female
+nonMSAlifeExpectancy <- dataNonMSA$Life.expectancy
+nonMSAlifeExpectancyMales <-dataNonMSA$Male.life.expectancy..years.
+nonMSAlifeExpectancyFemales <- dataNonMSA$Female.life.expectancy..years.
+```
+
+```{r}
+#reading and extrating data for MSAs
+dataMSA <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/MSAs.csv", header=TRUE, sep=",")
+#1)smoking
+MSAsmokingAny <- dataMSA$Smoking.Prevalence.Both.Any..
+smokingDaily <- dataMSA$Smoking.Prevalence.Both.Daily..
+MSAsmokingMalesAny <-dataMSA$Smoking.Prevalence.Males.Any..
+smokingMalesDaily <- dataMSA$Smoking.Prevalence.Males.Daily..
+MSAsmokingFemalesAny <- dataMSA$Smoking.Prevalence.Females.Any..
+smokingFemalesDaily <- dataMSA$Smoking.Prevalence.Females.Daily..
+#2)diabetes
+MSAdiabetes <- dataMSA$Diabetes.PrevalenceTotal.Both.Sex
+MSAdiabetesMale <-dataMSA$Diabetes.PrevalenceTotal.Males
+MSAdiabetesFemale <-dataMSA$Diabetes.PrevalenceTotal.Females
+#3)alcohol use
+MSAalcoholAny <- dataMSA$Alcohol.Use.Any..
+alcoholHeavy <-dataMSA$Alcohol.Use.Heavy..
+alcoholBinge <-dataMSA$Alcohol.Use.Binge..
+#4) obesity
+MSAobesityFemales <-dataMSA$Obesity.Prevalence.Females..
+MSAobesityMales <-dataMSA$Obesity.Prevalence.Males..
+#5) physical activity
+MSAactivityAnyFemales <-dataMSA$Physical.Activity..Any..Prevalence.Females..
+activitySufficientFemales <- dataMSA$Physical.Activity..Sufficient..Prevalence.Females..
+MSAactivityAnyMales <- dataMSA$Physical.Activity..Any..Prevalence.Males..
+activitySufficientMales <- dataMSA$Physical.Activity..Sufficient..Prevalence.Males..
+#6) life expectancy -- have race by male and female
+MSAlifeExpectancy <- dataMSA$Life.expectancy
+MSAlifeExpectancyMales <-dataMSA$Male.life.expectancy..years.
+MSAlifeExpectancyFemales <- dataMSA$Female.life.expectancy..years.
+```
+
+```{r}
+#reading data and assigning variables
+data <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/1999-2007 with MSA Edited.csv", header=TRUE, sep=",")
+MSA <- data$MSA
+#1)smoking
+smokingAny <- data$Smoking.Prevalence.Both.Any..
+smokingDaily <- data $Smoking.Prevalence.Both.Daily..
+smokingMalesAny <-data$Smoking.Prevalence.Males.Any..
+smokingMalesDaily <- data$Smoking.Prevalence.Males.Daily..
+smokingFemalesAny <- data$Smoking.Prevalence.Females.Any..
+smokingFemalesDaily <- data$Smoking.Prevalence.Females.Daily..
+#2)diabetes
+diabetes <- data$Diabetes.PrevalenceTotal.Both.Sex
+diabetesMale <-data$Diabetes.PrevalenceTotal.Males
+diabetesFemale <-data$Diabetes.PrevalenceTotal.Females
+#3)alcohol use
+alcoholAny <- data$Alcohol.Use.Any..
+alcoholHeavy <-data$Alcohol.Use.Heavy..
+alcoholBinge <-data$Alcohol.Use.Binge..
+#4) obesity
+obesityFemales <-data$Obesity.Prevalence.Females..
+obesityMales <-data$Obesity.Prevalence.Males..
+#5) physical activity
+activityAnyFemales <-data$Physical.Activity..Any..Prevalence.Females..
+activitySufficientFemales <- data$Physical.Activity..Sufficient..Prevalence.Females..
+activityAnyMales <- data$Physical.Activity..Any..Prevalence.Males..
+activitySufficientMales <- data$Physical.Activity..Sufficient..Prevalence.Males..
+#6) life expectancy -- have race by male and female
+lifeExpectancy <- data$Life.expectancy
+lifeExpectancyMales <-data$Male.life.expectancy..years.
+lifeExpectancyFemales <- data$Female.life.expectancy..years.
+```
+
+```{r}
+#reading data wiht sex attribute
+sdata <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/1999-2007 with MSA Gender.csv", header=TRUE, sep=",")
+sMSA <- sdata$MSA
+sSex <- sdata$Sex
+#1)smoking
+smokingAny <- sdata$Any.Smoking.Prevalence
+ssmokingDaily <- sdata$Daily.Smoking.Prevalence
+#2)diabetes
+sdiabetes <- sdata$Diabetes.Prevalence.Total
+#3)alcohol use
+salcoholAny <- sdata$Alcohol.Use.Any
+alcoholBinge <-sdata$Alcohol.Use.Binge..
+#4) obesity
+sobesity <-sdata$Obesity.Prevalence
+#5) physical activity
+sactivityAny <-sdata$Activity.Any..
+slifeExpectancy <- sdata$Life.Expectancy
+```
+
+A t-test is performed for each factor to see the difference in mean between MSA and non MSA.
+```{r}
+#t test for each factor between MSA and non MSA
+#life expectancy and mortality rates
+t.test(MSAlifeExpectancy,nonMSAlifeExpectancy, alternative = "two.sided")
+t.test(MSAlifeExpectancyFemales,nonMSAlifeExpectancyFemales)
+t.test(MSAlifeExpectancyMales,nonMSAlifeExpectancyMales)
+#alcoholuse
+t.test(MSAalcoholAny,nonMSAalcoholAny, alternative = "two.sided")#MSA high
+#obesity
+t.test(MSAobesityMales,nonMSAobesityMales)#non MSA high
+t.test(MSAobesityFemales,nonMSAobesityFemales)#non MSA higher
+#diabtes
+t.test(MSAdiabetes,nonMSAdiabetes)#non MSA high
+t.test(MSAdiabetesFemale,nonMSAdiabetesFemale)
+t.test(MSAdiabetesMale,nonMSAdiabetesMale)
+#smoking
+t.test(MSAsmokingAny,nonMSAsmokingAny)#non MSA higher
+t.test(MSAsmokingMalesAny,nonMSAsmokingMalesAny)
+t.test(MSAsmokingFemalesAny,nonMSAsmokingFemalesAny)#non msa higher
+#activity
+t.test(MSAactivityAnyMales,nonMSAactivityAnyMales)#msa higher
+t.test(MSAactivityAnyFemales,nonMSAactivityAnyFemales)#msa higher
+
+```
+The t-test shows that MSAs have 
+- higher life expectancy
+- higher rates of alcohol use
+- lower rates of obesity
+- lower rates of diabetes
+- lower rates of smoking
+- higher rates of physical activity
+
+Then, the regression is performed to examine the relationship between life expectancy and each of the factors (diabetes prevalence, smoking prevalence, alcohol use, obesity prevalence, and physical activity prevalence). The regression is done with and without the MSA variable. A robust regression is also performed without the MSA variable to account for heteroscedasticity in the data.
+```{r}
+#multivariate with msa no gender with interaction (this is what we're interested in)
+fit<-lm (sdata$Life.Expectancy~ sdata$MSA + sdata$MSA * sdata$Diabetes.Prevalence.Total + sdata$MSA *sdata$Daily.Smoking.Prevalence + sdata$MSA * sdata$Alcohol.Use.Any + sdata$MSA *sdata$Obesity.Prevalence + sdata$MSA *sdata$Activity.Any..)
+summary(fit)
+```
+
+```{r}
+#GENERAL REGRESSION
+fit <- lm(slifeExpectancy ~ sdiabetes + ssmokingDaily +salcoholAny + sobesity+sactivityAny)
+summary(fit)
+plot(fit)
+#ROBUST REGRESSION
+require(MASS)
+rr.bisquare <- rlm(slifeExpectancy ~ sdiabetes + ssmokingDaily +salcoholAny + sobesity+sactivityAny)
+summary(rr.bisquare)
+```
+The results from the regression shows 
+- in general, a positive relationship between life expectancy and
+  - MSA status
+  - alcohol use prevalence
+  - obesity prevalence
+- in general, a negative relationship between life expectancy and 
+  - diabetes prevalence
+  - smoking prevalence
+- in MSAs compared to nonMSAs, a positive relationship between life expectancy and
+  - diabetes prevalence
+  - alcohol use prevalence
+- in MSAs compared to nonMSAs, a negative relationship between life expectancy and
+  - smoking prevalence
+  - obesity prevalence
+  
+Next, the Oaxaca Blinder decomposition is used to decompose the differences of life expectancy between MSAs and nonMSAs into explained differences caused by differences in the explanatory variable and unexplained differences.
+```{r}
+rm (list = ls())
+df <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/1999-2007 with MSA Gender.csv", header=TRUE, sep=",")
+df1 <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/1999-2007 with MSA Edited.csv", header=TRUE, sep=",")
+require(oaxaca)
+results <- oaxaca(formula = Life.Expectancy ~ Sex + Diabetes.Prevalence.Total + Daily.Smoking.Prevalence + Alcohol.Use.Any + Obesity.Prevalence + Activity.Any..|Not.MSA, data = df, R = 100)
+```
+
+```{r}
+results$n
+results$y #difference in life expectancy is -0.7364167 
+```
+The Oaxaca Blinder decomposition shows the the mean life expectancy in MSAs higher than the mean life expectancy in NonMsas, which is consistent with the results from the t-test.
+
+The results from the Oaxaca Blinder are examined in the twofold and threefold variations. The twofold decomposition accounts only for the explained differences based on differences in the explanatory vairables and unexplained differences not due to the explanatory variables.
+
+The threefold decomposition also takes into account the interaction between the explained and unexplained differences.
+```{r}
+results$threefold$overall
+plot(results, components = c("endowments","coefficients", "interaction"))
+```
+The Endowments from the threefold results shows the contribution of differences in the explanatory variables; the coefficients show the effect of them; the interaction accounts for the fact that cross-group differences in explanatory variables and coefficients occur at the same time.
+
+
+
+
+```{r}
+#two fold decomposition
+ results$twofold$overall
+```
+The group weight of interest to us is -1, so the table is reconstructed without the irrelevant information and for each of the variables.
+```{r}
+variables <- c("Sex", "Diabetes.Prevalence.Total","Daily.Smoking.Prevalence","Alcohol.Use.Any","Obesity.Prevalence", "Activity.Any..")
+columns <- c("group.weight","coef(explained)","coef(unexplained)", "coef(unexplained A)", "coef(unexplained B)")
+results$twofold$variables[[5]][variables,columns]
+```
+
+The results are plotted below.
+```{r}
+ plot(results, decomposition = "twofold", group.weight = -1)
+```
+From the results above, 3 significant variables are unexplained, smoking prevalence, and activity. They are examined further below by splitting those unexplained differences into differences in favor of (longer life expectancy) in MSAs, and differences against (longer life expectancy) in nonMSAs.
+```{r}
+ plot(results, decomposition = "twofold", group.weight = -1, unexplained.split=TRUE, components = c("unexplained A", "unexplained B"), component.labels = c("unexplained A" = "In Favor of MSA", "unexplained B" = "Against non MSA"), variables = c("Daily.Smoking.Prevalence","Activity.Any.."))
+```
+
+
+Finally, a fixed effects regression is run to isolate the effect of time. The Breusch-Pagan test and Hasuman test is first run to check if the fixed effects regression is an appropriate model.
+```{r}
+rm(list=ls())
+require("plm")
+require("lmtest")
+mydata <- read.csv(file="C:/Users/mytan/Desktop/Archive/SBU Archive/Spring 2019/ECO487/Analysis of Life Expectancy by County/Data/Panel Data Analysis 1999-2007.csv", header=TRUE, sep=",")
+MSAs <- mydata [which(mydata$MSA == 1),]
+nonMSAs <- mydata[which(mydata$MSA==0),]
+
+#testing to know if you want fixed effects
+bptest(mydata$Male.life.expectancy..years ~mydata$MSA+mydata$Diabetes.PrevalenceTotal.Males+mydata$Smoking.Prevalence.Males.Daily.. + mydata$Alcohol.Use.Binge.. + mydata$Obesity.Prevalence.Males.. + mydata$Physical.Activity..Any..Prevalence.Males.., data = mydata, studentize = FALSE)
+phtest(mydata$Male.life.expectancy..years ~mydata$MSA+mydata$Diabetes.PrevalenceTotal.Males+mydata$Smoking.Prevalence.Males.Daily.. + mydata$Alcohol.Use.Binge.. + mydata$Obesity.Prevalence.Males.. + mydata$Physical.Activity..Sufficient..Prevalence.Females.., data = mydata)
+```
+The results from the Breusch-Pagan test is significant, indicating that the fixed effects model is appropriate. The fixed effects regression is then done both with and without interactions with the MSA variable.
+
+```{r}
+#this regression is effects independent of time -- fixed effect
+plmwithin <- plm(mydata$Male.life.expectancy..years ~mydata$MSA+mydata$Diabetes.PrevalenceTotal.Males+mydata$Smoking.Prevalence.Males.Daily.. + mydata$Alcohol.Use.Binge.. + mydata$Obesity.Prevalence.Males.. + mydata$Physical.Activity..Any..Prevalence.Males.. + mydata$MSA*mydata$Diabetes.PrevalenceTotal.Males+mydata$MSA*mydata$Smoking.Prevalence.Males.Daily.. +mydata$MSA* mydata$Alcohol.Use.Binge.. + mydata$MSA*mydata$Obesity.Prevalence.Males.. + mydata$MSA*mydata$Physical.Activity..Any..Prevalence.Males.., data = mydata, model = "within")
+summary(plmwithin)
+
+plmwithin <- plm(mydata$Male.life.expectancy..years ~+mydata$Diabetes.PrevalenceTotal.Males+mydata$Smoking.Prevalence.Males.Daily.. + mydata$Alcohol.Use.Binge.. + mydata$Obesity.Prevalence.Males.. + mydata$Physical.Activity..Any..Prevalence.Males.. , data = mydata, model = "within")
+summary(plmwithin)
+
+
+#this regression is effects independent of time -- fixed effect
+plmwithinFemale <- plm(mydata$Female.life.expectancy..years ~mydata$MSA+mydata$Diabetes.PrevalenceTotal.Females+mydata$Smoking.Prevalence.Females.Daily.. + mydata$Alcohol.Use.Binge.. + mydata$Obesity.Prevalence.Females.. + mydata$Physical.Activity..Any..Prevalence.Females.. + mydata$MSA*mydata$Diabetes.PrevalenceTotal.Females+mydata$MSA*mydata$Smoking.Prevalence.Females.Daily.. +mydata$MSA* mydata$Alcohol.Use.Binge.. + mydata$MSA*mydata$Obesity.Prevalence.Females.. + mydata$MSA*mydata$Physical.Activity..Any..Prevalence.Females.., data = mydata, model = "within")
+summary(plmwithinFemale)
+
+plmwithin <- plm(mydata$Female.life.expectancy..years ~+mydata$Diabetes.PrevalenceTotal.Females+mydata$Smoking.Prevalence.Females.Daily.. + mydata$Alcohol.Use.Binge.. + mydata$Obesity.Prevalence.Females.. + mydata$Physical.Activity..Any..Prevalence.Females.. , data = mydata, model = "within")
+summary(plmwithin)
+
+
+```
+The results from the fixed effects regression shows similar relationships between the explanatory variables and life expectancy as the results from the pooled ordinary least squares regression.
+
+The fixed effects regression is then done in only MSAs and only nonMSAs to view the trend of life expectancy over time for MSAs, nonMSAs, and both MSAs and nonMSAs.
+```{r}
+#MSA
+
+#this regression is effects independent of time -- fixed effect
+plmwithinMSA <- plm(MSAs$Male.life.expectancy..years ~MSAs$MSA+MSAs$Diabetes.PrevalenceTotal.Males+MSAs$Smoking.Prevalence.Males.Daily.. + MSAs$Alcohol.Use.Binge.. + MSAs$Obesity.Prevalence.Males.. + MSAs$Physical.Activity..Any..Prevalence.Males.., data=MSAs, model = "within")
+summary(plmwithinMSA)
+
+
+#this regression is effects independent of time -- fixed effect
+plmwithinMSAFemale <- plm(MSAs$Female.life.expectancy..years ~MSAs$MSA+MSAs$Diabetes.PrevalenceTotal.Females+MSAs$Smoking.Prevalence.Females.Daily.. + MSAs$Alcohol.Use.Binge.. + MSAs$Obesity.Prevalence.Females.. + MSAs$Physical.Activity..Any..Prevalence.Females.., data=MSAs, model = "within")
+summary(plmwithinMSAFemale)
+```
+
+```{r}
+#nMSA
+#this regression is effects independent of time -- fixed effect
+plmwithinnonMSA <- plm(nonMSAs$Male.life.expectancy..years ~nonMSAs$Diabetes.PrevalenceTotal.Males+nonMSAs$Smoking.Prevalence.Males.Daily.. + nonMSAs$Alcohol.Use.Binge.. + nonMSAs$Obesity.Prevalence.Males.. + nonMSAs$Physical.Activity..Any..Prevalence.Males.., data=nonMSAs, model = "within")
+summary(plmwithinnonMSA)
+
+#this regression is effects independent of time -- fixed effect
+plmwithinnonMSAFemale <- plm(nonMSAs$Female.life.expectancy..years ~nonMSAs$Diabetes.PrevalenceTotal.Females+nonMSAs$Smoking.Prevalence.Females.Daily.. + nonMSAs$Alcohol.Use.Binge.. + nonMSAs$Obesity.Prevalence.Females.. + nonMSAs$Physical.Activity..Any..Prevalence.Females.., data=nonMSAs, model = "within") 
+summary(plmwithinnonMSAFemale)
+```
+
+The trend of life expectancy for both MSAs and nonMSAs, only MSAs, and only nonMSAs is plotted for both males and females.
+```{r}
+#isolates the effect of time against mean life expectancy 
+trendmale <- fixef(plmwithin,type="dmean")
+
+#trend
+trenddfmale <- data.frame("Year" = c(1999:2007),"Value"= trendmale)
+plot(trenddfmale, col = 'blue', ylab = "Deviation of Life Expectancy from Overall Mean")
+
+abline(lm(trenddfmale$Value~trenddfmale$Year), col="blue") # regression line (y~x) 
+#axis(1, at=1:9, labels=c(1999:2007))
+summary(trendmale)
+#MSA
+trendmaleMSA <- fixef(plmwithinMSA,type="dmean")
+trenddfmaleMSA <- data.frame("Year" = c(1999:2007),"Value"= trendmaleMSA)
+points(trenddfmaleMSA, col = 'navyblue')
+abline(lm(trenddfmaleMSA$Value~trenddfmaleMSA$Year), col="navyblue") # regression line (y~x) 
+#axis(1, at=1:9, labels=c(1999:2007))
+summary(trendmaleMSA)
+#nonMSA
+trendmaleNMSA <- fixef(plmwithinnonMSA,type="dmean")
+trenddfmaleNMSA <- data.frame("Year" = c(1999:2007),"Value"= trendmaleNMSA)
+points(trenddfmaleNMSA, col = "lightslateblue")
+abline(lm(trenddfmaleNMSA$Value~trenddfmaleNMSA$Year), col="lightslateblue") # regression line (y~x) 
+#axis(1, at=1:9, labels=c(1999:2007))
+summary(trendmaleNMSA)
+legend(1999,0.2, legend = c("All Males","Males in MSAs","Males in NMSAs"), col = c("blue","navyblue","lightslateblue"),lty=1, cex=0.8)
+
+trendfemale <- fixef(plmwithinFemale,type="dmean")
+#trend
+trenddffemale <- data.frame("Year" = c(1999:2007),"Value"= trendfemale)
+plot(trenddffemale, col = "grey", ylab = "Deviation of Life Expectancy from Overall Mean")
+legend(1999,0.2, legend = c("All Females","Females in MSAs", "Females in NMSAs"), col = c("grey","grey0","grey39"),lty=1, cex=0.8)
+abline(lm(trenddffemale$Value~trenddffemale$Year), col="grey") # regression line (y~x) 
+#axis(1, at=1:9, labels=c(1999:2007))
+summary(trendfemale)
+#MSA
+trendfemaleMSA <- fixef(plmwithinMSAFemale,type="dmean")
+trenddffemaleMSA <- data.frame("Year" = c(1999:2007),"Value"= trendfemaleMSA)
+points(trenddffemaleMSA, col = "grey0")
+abline(lm(trenddffemaleMSA$Value~trenddffemaleMSA$Year), col="grey0") # regression line (y~x) 
+#axis(1, at=1:9, labels=c(1999:2007))
+summary(trendfemaleMSA)
+#nonMSA
+trendfemaleNMSA <- fixef(plmwithinnonMSAFemale,type="dmean")
+trenddffemaleNMSA <- data.frame("Year" = c(1999:2007),"Value"= trendfemaleNMSA)
+points(trenddffemaleNMSA, col = 'grey39')
+abline(lm(trenddffemaleNMSA$Value~trenddffemaleNMSA$Year), col="grey39") # regression line (y~x) 
+axis(1, at=1:9, labels=c(1999:2007))
+summary(trendfemaleNMSA)
+
+#axis(1, at=1:9, labels=c(1999:2007))
+```
+The plot shows that for males, life expectancy is increasing in general and in nonMSAs, but decreasing in MSAs. For females, life expectancy is increasing for all categories, but the rate of increase in MSAs is very slow. However, the data used to construct the plot did not yield statistically significant results, so the information should not be seriously considered.
+
+
+The mean life expectancy not accounting for the effect of time is extracted for males and females in both MSAs and non MSAs.
+```{r}
+#Extracting fixed effects with fixef
+twoway <-  plm(MSAs$Male.life.expectancy..years ~ MSAs$MSA + MSAs$Diabetes.PrevalenceTotal.Males+MSAs$Smoking.Prevalence.Males.Daily.. + MSAs$Alcohol.Use.Any.. + MSAs$Obesity.Prevalence.Males.. + MSAs$Physical.Activity..Any..Prevalence.Males.., data = MSAs,model="within",effect="time")
+MSAsFexef <- fixef(twoway,effect="time")
+mean(MSAsFexef)
+
+twoway <-  plm(nonMSAs$Male.life.expectancy..years ~ nonMSAs$MSA + nonMSAs$Diabetes.PrevalenceTotal.Males+nonMSAs$Smoking.Prevalence.Males.Daily.. + nonMSAs$Alcohol.Use.Any.. + nonMSAs$Obesity.Prevalence.Males.. + nonMSAs$Physical.Activity..Any..Prevalence.Males.., data = nonMSAs,model="within",effect="time")
+nonMSAsFexef <- fixef(twoway,effect="time")
+mean(nonMSAsFexef)
+
+twoway <-  plm(MSAs$Female.life.expectancy..years ~ MSAs$MSA + MSAs$Diabetes.PrevalenceTotal.Females+MSAs$Smoking.Prevalence.Females.Daily.. + MSAs$Alcohol.Use.Any.. + MSAs$Obesity.Prevalence.Females.. + MSAs$Physical.Activity..Any..Prevalence.Females.., data = MSAs,model="within",effect="time")
+MSAsFexef <- fixef(twoway,effect="time")
+mean(MSAsFexef)
+
+twoway <-  plm(nonMSAs$Female.life.expectancy..years ~ nonMSAs$MSA + nonMSAs$Diabetes.PrevalenceTotal.Females+nonMSAs$Smoking.Prevalence.Females.Daily.. + nonMSAs$Alcohol.Use.Any.. + nonMSAs$Obesity.Prevalence.Females.. + nonMSAs$Physical.Activity..Any..Prevalence.Females.., data = nonMSAs,model="within",effect="time")
+nonMSAsFexef <- fixef(twoway,effect="time")
+mean(nonMSAsFexef)
+```
+The results show that, consistent with the other results from this analysis, both males and females have longer life expectancies in MSAs that in non MSAs.
