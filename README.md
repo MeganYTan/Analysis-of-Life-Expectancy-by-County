@@ -3,7 +3,7 @@
 ## Introduction
 This project analyzes the relationship between life expectancy and obesity prevalence, smoking prevalence, physical activity prevalence, diabetes prevalence, and alcohol use prevalence on the country level with interest in the differences between life expectancy in counties which are urban and counties which are rural. It was done as a senior research project in Economics.
 
-To download the research paper, go to (Analysis of Life Expectancy by County Megan Tan.docx) in the repository. To download the source code, go to  (Analysis of Life Expectancy by County.rmb) in the repository. To view source code with its output as a webpage, click [here] (https://meganytan.github.io/documents/Analysis%20of%20Life%20Expectancy%20by%20County.nb.html).
+To download the research paper, go [here](../blob/master/LICENSE). To download the source code, go to  [here](../Analysis of Life Expectancy by County.rmb). To view source code with its output as a webpage, click [here](https://meganytan.github.io/documents/Analysis%20of%20Life%20Expectancy%20by%20County.nb.html).
 
 ## Some discussion
 - Rural counties have lower life expectancy (by about .5 year for males and 1 year for males), but also higher rates of smoking, obesity, and diabetes, and lower rates of physical activity and alcohol use.
